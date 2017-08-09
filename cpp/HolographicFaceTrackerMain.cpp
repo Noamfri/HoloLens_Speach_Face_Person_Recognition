@@ -35,6 +35,11 @@
 #include <stdlib.h>
 #include <shellapi.h>
 
+#include <fstream>
+
+#include <locale>
+#include <codecvt>
+
 //#include <msclr\marshal_cppstd.h>
 using namespace std;
 
@@ -664,7 +669,26 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 														if (first_index > 0) {
 															int second_index = s.find(L",", first_index + 13);
 															std::wstring name = s.substr(first_index + 13, second_index - first_index-13 - 1);
-															m_textRenderer_r->pre_sentence_pre = name+L": ";
+															// name is the face subject_id
+
+															/* Getting details for the recognized face */
+															//convert wstring to string:
+															using convert_typeX = std::codecvt_utf8<wchar_t>;
+															std::wstring_convert<convert_typeX, wchar_t> converterX;
+															std::string name_sss = converterX.to_bytes(name);
+
+															std::ifstream infile("database.txt");
+															std::string line;
+															while (std::getline(infile, line)) {
+																if (name_sss == line) {
+																	std::getline(infile, line);
+																	std::wstring details = converterX.from_bytes(line);
+																	//std::wstring details((const wchar_t*)&line[0],sizeof(char)/sizeof(wchar_t)*line.size());
+																	m_textRenderer_r->pre_sentence_pre = details;
+																	break;
+																}
+															}
+															
 														}
 														else {
 															m_textRenderer_r->pre_sentence_pre = L"unknown: ";

@@ -190,6 +190,9 @@
     <Media Include="Audio\BasicListeningEarcon.wav" />
     <Media Include="Audio\BasicResultsEarcon.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="database.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VSINSTALLDIR)\Common7\IDE\Extensions\Microsoft\VsGraphics\ImageContentTask.targets" />
