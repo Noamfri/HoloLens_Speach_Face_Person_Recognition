@@ -151,10 +151,8 @@ namespace HolographicFaceTracker
 
         // Objects related to rendering/3D models
         std::shared_ptr<QuadRenderer>                                   m_quadRenderer;
-		std::shared_ptr<QuadRenderer>                                   m_quadRenderer_details;
         std::shared_ptr<SpinningCubeRenderer>                           m_spinningCubeRenderer;
         std::shared_ptr<TextRenderer>                                   m_textRenderer;
-		std::shared_ptr<TextRenderer>                                   m_textRenderer_details;
         std::shared_ptr<NV12VideoTexture>                               m_videoTexture;
 		//std::shared_ptr<string>                                         pre_sentence = make_shared<string>("Value 1");
 		

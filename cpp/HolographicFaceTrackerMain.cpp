@@ -106,7 +106,7 @@ void HolographicFaceTrackerMain::BeginVoiceUIPrompt()
 	// A command list is used to continuously look for one-word commands.
 	// You need some way for the user to know what commands they can say. In this example, we provide
 	// verbal instructions; you could also use graphical UI, etc.
-	voicePrompt = L"Welcome, you can speak anything, and the subtitles will be shown";
+	voicePrompt = L"Welcome, look at a face to detect it";
 
 	// Kick off speech synthesis.
 	create_task(speechSynthesizer->SynthesizeTextToStreamAsync(voicePrompt), task_continuation_context::use_current())
@@ -387,7 +387,6 @@ void HolographicFaceTrackerMain::SetHolographicSpace(HolographicSpace^ holograph
 			DX::CreateAndInitializeAsync(m_quadRenderer, m_deviceResources),
 			DX::CreateAndInitializeAsync(m_spinningCubeRenderer, m_deviceResources),
 			DX::CreateAndInitializeAsync(m_textRenderer, m_deviceResources, 512u, 512u),
-			DX::CreateAndInitializeAsync(m_textRenderer_details, m_deviceResources, 512u, 512u),
 		};
 
 		if (m_videoFrameProcessor)
@@ -409,7 +408,7 @@ void HolographicFaceTrackerMain::SetHolographicSpace(HolographicSpace^ holograph
 			else
 			{
 				m_textRenderer->RenderTextOffscreen(L"No faces detected");
-				m_textRenderer_details->RenderTextOffscreen(L"No faces details ");
+				
 			}
 
 			m_isReadyToRender = true;
@@ -605,7 +604,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 					m_previousFrameTimestamp = currentTimeStamp;
 					// 2 weeks code.
 					if (searching == false){
-					
+						m_textRenderer->pre_sentence_pre = L"searching for this face...";
 						// Encode the buffer back into a Base64 string.
 
 						SoftwareBitmap^ sftBitmap_c = frame->VideoMediaFrame->SoftwareBitmap;
@@ -704,7 +703,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 	{
 		
 		//m_textRenderer_r->pre_sentence_pre = L"";
-		m_textRenderer->pre_sentence_pre = L"";
+		m_textRenderer->pre_sentence_pre = L"No face detected";
 		searching = false; 
 	}
 	}
@@ -713,17 +712,17 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 	//std::wstring fefe = L"firas";
 
 	// Check for new speech input since the last frame.
-	if (m_lastCommand != nullptr)
+	/*if (m_lastCommand != nullptr)
 	{
 		auto command = m_lastCommand;
 		m_lastCommand = nullptr;
 		std::wstring lastCommandString = command->Data();
 		m_lastSentence = lastCommandString;
-		m_textRenderer->RenderTextOffscreen(L'"' +lastCommandString + L'"');
-		m_textRenderer_details->RenderTextOffscreen(m_textRenderer->pre_sentence_pre);
 		
-	}
-
+		
+		
+	}*/
+	m_textRenderer->RenderTextOffscreen(m_textRenderer->pre_sentence_pre);
 	SpatialPointerPose^ pointerPose = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 	SpatialPointerPose^ pointerPose_details = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 
@@ -735,16 +734,16 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 		{
 			/*m_quadRenderer->Update(pointerPose, float3{ 0.0f, -0.15f, -2.0f }, m_timer);*/
 			m_quadRenderer->Update(pointerPose, float3{ -0.0f, 0.0f, -2.0f }, m_timer);
-			//m_quadRenderer_details->Update(pointerPose_details, float3{ -0.0f, 1.0f, -1.0f }, m_timer);
+			
 		}
 		// Otherwise, put the quad centered in the viewport, 2 meters out.
 		else
 		{
 			m_quadRenderer->ResetTexCoordScaleAndOffset();
-			//m_quadRenderer_details->ResetTexCoordScaleAndOffset();
+			
 			/*m_quadRenderer->Update(pointerPose, float3{ 0.0f, -0.15f, -2.0f }, m_timer);*/
 			m_quadRenderer->Update(pointerPose, float3{ -0.0f, 0.0f, -2.0f }, m_timer);
-		//	m_quadRenderer_details->Update(pointerPose_details, float3{ -0.0f, 1.0f, -1.0f }, m_timer);
+		
 		}
 
 		// Wait to listen for speech input until the audible UI prompts are complete.
@@ -859,14 +858,14 @@ bool HolographicFaceTrackerMain::Render(Windows::Graphics::Holographic::Holograp
 				{
 					m_spinningCubeRenderer->Render();
 					// m_quadRenderer->RenderNV12(m_videoTexture->GetLuminanceTexture(), m_videoTexture->GetChrominanceTexture());
-					m_quadRenderer->RenderRGB(m_textRenderer_details->GetTexture());
-					//m_quadRenderer_details->RenderRGB(m_textRenderer_details->GetTexture());
+					m_quadRenderer->RenderRGB(m_textRenderer->GetTexture());
+					
 				}
 				// Otherwise we render the status message on the quad.
 				else
 				{
 					m_quadRenderer->RenderRGB(m_textRenderer->GetTexture());
-					//m_quadRenderer_details->RenderRGB(m_textRenderer_details->GetTexture());
+					
 				}
 			}
 
@@ -899,10 +898,9 @@ void HolographicFaceTrackerMain::OnDeviceLost()
 	m_isReadyToRender = false;
 
 	m_quadRenderer->ReleaseDeviceDependentResources();
-	//m_quadRenderer_details->ReleaseDeviceDependentResources();
+	
 	m_spinningCubeRenderer->ReleaseDeviceDependentResources();
 	m_textRenderer->ReleaseDeviceDependentResources();
-	m_textRenderer_details->ReleaseDeviceDependentResources();
 	m_videoTexture->ReleaseDeviceDependentResources();
 }
 
@@ -914,7 +912,6 @@ void HolographicFaceTrackerMain::OnDeviceRestored()
 		m_quadRenderer->CreateDeviceDependentResourcesAsync(),
 		m_spinningCubeRenderer->CreateDeviceDependentResourcesAsync(),
 		m_textRenderer->CreateDeviceDependentResourcesAsync(),
-		m_textRenderer_details->CreateDeviceDependentResourcesAsync(),
 		m_videoTexture->CreateDeviceDependentResourcesAsync(),
 	};
 

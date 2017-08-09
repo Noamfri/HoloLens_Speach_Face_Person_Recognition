@@ -6,6 +6,7 @@
     <DebuggerMachineName>132.68.53.234</DebuggerMachineName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <DebuggerFlavor>WindowsDeviceDebugger</DebuggerFlavor>
+    <DebuggerFlavor>UWPRemoteDebugger</DebuggerFlavor>
+    <DebuggerMachineName>132.68.53.234</DebuggerMachineName>
   </PropertyGroup>
 </Project>
