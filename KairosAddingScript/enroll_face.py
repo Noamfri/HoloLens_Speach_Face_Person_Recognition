@@ -1,5 +1,5 @@
 import requests, json, base64
-with open("Images/messi1.png", "rb") as imageFile:
+with open("Images/Adam.jpg", "rb") as imageFile:
     strr = base64.b64encode(imageFile.read())
     rd = str(imageFile)
     img = str(strr)
@@ -11,7 +11,7 @@ values = """
      "image": """;
 values+= '"'+(img)+'",';
 values += """
-    "subject_id": "Messi Football player\n 2  childrens \n salary  1000  ",
+    "subject_id": "Adam ",
     "gallery_name": "MyGallery"
   }
   """

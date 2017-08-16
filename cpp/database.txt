@@ -1,8 +1,12 @@
 firas
-student at thre asd asdf 
+firas is a student at the
+VISL lab
 
 noam 
-asdlkdfas  lasdfkj as fdsakl
+noam is a student at the VISL lab
 
-Messi
-Messi\n  famous\n dodo\n
+messi
+messi is a football player, not a student
+
+adam
+adam is our supervisor at the the VISL lab
