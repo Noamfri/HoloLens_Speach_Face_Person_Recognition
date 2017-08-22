@@ -1,12 +1,18 @@
 firas
-firas is a student at the
-VISL lab
-
+firas is a student at the VISL lab
 noam
 noam is a student at the VISL lab
-
-messi
-messi is a football player, not a student
-
 adam
 adam is our supervisor at the the VISL lab
+ben
+ben is a student at the VISL lab
+maroun
+maroun is a student at the TCE lab
+basel
+basel isn't a student - not allowed to enter VISL lab
+domiana
+domiana is a student at the EE faculty
+matanya
+matanya is a student at the VISL lab
+assaf
+assaf is a student at the VISL lab

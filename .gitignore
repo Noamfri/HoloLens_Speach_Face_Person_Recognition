@@ -7,3 +7,5 @@ cpp/Debug
 cpp/.vs
 /cpp/Release/Holograp.c9105102.tlog
 /cpp/Release
+/cpp/AppPackages
+cpp/HolographicFaceTracking_TemporaryKey.pfx

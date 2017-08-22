@@ -9,4 +9,10 @@
     <DebuggerFlavor>WindowsDeviceDebugger</DebuggerFlavor>
     <DebuggerMachineName>132.68.50.94</DebuggerMachineName>
   </PropertyGroup>
+  <PropertyGroup>
+    <AppxPackageIsForStore>False</AppxPackageIsForStore>
+    <AppxShowAllApps>False</AppxShowAllApps>
+    <AppxBuildConfigurationSelection>x86</AppxBuildConfigurationSelection>
+    <PackageOptionalProjectsInIdeBuilds>False</PackageOptionalProjectsInIdeBuilds>
+  </PropertyGroup>
 </Project>

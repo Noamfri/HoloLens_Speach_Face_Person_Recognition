@@ -578,7 +578,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 	SpatialCoordinateSystem^ currentCoordinateSystem = m_referenceFrame->GetStationaryCoordinateSystemAtTimestamp(prediction->Timestamp);
 
 	auto m_pre_sentence = make_shared<wstring>(L"Value 1");
-	//m_pre_sentence = pre_sentence;
+
 	if (m_videoFrameProcessor && m_faceTrackerProcessor)
 	{
 		m_trackingFaces = m_faceTrackerProcessor->IsTrackingFaces();
@@ -595,20 +595,11 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 				if (currentTimeStamp > m_previousFrameTimestamp)
 				{
 					m_videoTexture->CopyFromVideoMediaFrame(frame->VideoMediaFrame);
-					class MyClass
-					{
-					public:
-						MyClass();
-						~MyClass();
-
-						int s = 1;
-						
-					};
-
-					
+				
 					m_previousFrameTimestamp = currentTimeStamp;
-					// 2 weeks code.
+
 					if (searching == false){
+						searching = true;
 						m_textRenderer->pre_sentence_pre = L"searching for this face...";
 						// Encode the buffer back into a Base64 string.
 
@@ -620,8 +611,6 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 						//  m_spinningCubeRenderer->SetColor(a);
 						//  m_spinningcube.SetColor(a);
 						 // std::shared_ptr<TextRenderer>  m_textRenderer_r = m_textRenderer;
-						  
-						  //MyClass m_textRenderer_r;
 
 						 // auto s = make_shared<wstring>(L"Value 1");
 						 // m_textRenderer
@@ -642,15 +631,17 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 
 									{
 
+										//using the api:
 										HttpClient^ httpClient = ref new HttpClient();
-										//Uri^ uri = ref new Uri("https://api.kairos.com/enroll");
 										Uri^ uri = ref new Uri("https://api.kairos.com/recognize");
 										httpClient->DefaultRequestHeaders->TryAppendWithoutValidation("app_id", "98a9ce6b");
 										httpClient->DefaultRequestHeaders->TryAppendWithoutValidation("app_key", "314e18bf9c959790db7be4e05e520b68");
 
-										//Platform::String^ s = "{  \"image\": \"" + strBase64New_new + "\",  \"subject_id\": \"Elizabeth\",  \"gallery_name\": \"MyGallery\"}";
+										//creating the string to send:
 										Platform::String^ s = "{  \"image\": \"" + strBase64New_new + "\", \"gallery_name\": \"MyGallery\"}";
+										//sending the picture:
 										IAsyncOperationWithProgress<HttpResponseMessage^, HttpProgress> ^accessSQLOp = httpClient->PostAsync(uri, ref new HttpStringContent(s, Windows::Storage::Streams::UnicodeEncoding::Utf8, "application/json"));
+										
 										auto operationTask = create_task(accessSQLOp);
 										operationTask.then([this, m_pre_sentence, m_textRenderer_r](HttpResponseMessage^ response) {
 
@@ -676,29 +667,23 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 															using convert_typeX = std::codecvt_utf8<wchar_t>;
 															std::wstring_convert<convert_typeX, wchar_t> converterX;
 															std::string name_sss = converterX.to_bytes(name);
-
+															//Check in the DB:
 															std::ifstream infile("database.txt");
 															std::string line;
 															while (std::getline(infile, line)) {
 																if (name_sss == line) {
 																	std::getline(infile, line);
 																	std::wstring details = converterX.from_bytes(line);
-																	//std::wstring details((const wchar_t*)&line[0],sizeof(char)/sizeof(wchar_t)*line.size());
 																	m_textRenderer_r->pre_sentence_pre = details;
 																	break;
 																}
 															}
 															
 														}
-														else {
-															m_textRenderer_r->pre_sentence_pre = L"unknown: ";
-														}
-														//Windows::Foundation::Numerics::float4 a = Windows::Foundation::Numerics::float4(0.0f, 1.0f, 0.0f, 0.0f);
-														// m_spinningcube.SetColor(Windows::Foundation::Numerics::float4((1.0f, 1.0f, 1.0f, 1.0f)));
-														//m_textRenderer_r->RenderTextOffscreen(L"Found API");
-														//m_textRenderer_r->pre_sentence_pre = L"FOFO";
-														//*m_pre_sentence = (L"Hello:");
-														
+														else 
+														{
+															m_textRenderer_r->pre_sentence_pre = L"unknown person";
+														}														
 														
 													});
 												}
@@ -721,12 +706,10 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 			}
 		}
 
-		searching = true;
+		//searching = true;
 	}
 	else 
 	{
-		
-		//m_textRenderer_r->pre_sentence_pre = L"";
 		m_textRenderer->pre_sentence_pre = L"No face detected";
 		searching = false; 
 	}
