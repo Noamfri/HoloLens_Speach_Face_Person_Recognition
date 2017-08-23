@@ -23,7 +23,7 @@ TextRenderer::TextRenderer(std::shared_ptr<DX::DeviceResources> deviceResources,
 {
 }
 
-void TextRenderer::RenderTextOffscreen(const std::wstring& str, bool isAuthorized)
+void TextRenderer::RenderTextOffscreen(const std::wstring& str, bool isAuthorized, Windows::Foundation::Numerics::float2 position)
 {
     // Clear the off-screen render target.
 	//m_deviceResources->GetD3DDeviceContext()->ClearRenderTargetView(m_renderTargetView.Get(), DirectX::Colors::Transparent);
@@ -65,8 +65,10 @@ void TextRenderer::RenderTextOffscreen(const std::wstring& str, bool isAuthorize
 
     // Render the text using DirectWrite.
     m_d2dRenderTarget->DrawTextLayout(
-        D2D1::Point2F(0.0f, 0.0f),
-        textLayout.Get(),
+        //D2D1::Point2F(0.0f, 0.0f),
+		//D2D1::Point2F(position.x, position.y),
+		D2D1::Point2F(m_position.x, m_position.y),
+		textLayout.Get(),
         m_whiteBrush.Get()
         );
 

@@ -402,19 +402,20 @@ void HolographicFaceTrackerMain::SetHolographicSpace(HolographicSpace^ holograph
 
 		when_all(deviceInitTasks.begin(), deviceInitTasks.end()).then([this]
 		{
-			// If we weren't able to create the VideoFrameProcessor, then we don't have any cameras we can use.
-			// Set our status message to inform the user. Typically this should only happen on the emulator.
-			if (m_videoFrameProcessor == nullptr)
-			{
-				m_textRenderer->RenderTextOffscreen(L"No camera available", m_authorizedPerson);
-			}
-			// Everything is good to go, so we can set our status message to inform the user when we don't detect
-			// any faces.
-			else
-			{
-				m_textRenderer->RenderTextOffscreen(L"No faces detected", m_authorizedPerson);
-				
-			}
+			//Windows::Foundation::Numerics::float2 positionForText = { 0.0f, 0.0f };
+			//// If we weren't able to create the VideoFrameProcessor, then we don't have any cameras we can use.
+			//// Set our status message to inform the user. Typically this should only happen on the emulator.
+			//if (m_videoFrameProcessor == nullptr)
+			//{
+			//	m_textRenderer->RenderTextOffscreen(L"No camera available", m_authorizedPerson, positionForText);
+			//}
+			//// Everything is good to go, so we can set our status message to inform the user when we don't detect
+			//// any faces.
+			//else
+			//{
+			//	m_textRenderer->RenderTextOffscreen(L"No faces detected", m_authorizedPerson, positionForText);
+			//	
+			//}
 
 			m_isReadyToRender = true;
 		});
@@ -738,7 +739,10 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 		
 		
 	}*/
-	m_textRenderer->RenderTextOffscreen(m_textRenderer->pre_sentence_pre, m_authorizedPerson);
+	Windows::Foundation::Numerics::float3 positionForTextFromCube = m_spinningCubeRenderer->GetPosition();
+	Windows::Foundation::Numerics::float2 positionForText = { positionForTextFromCube.x, positionForTextFromCube.y };
+	m_textRenderer->SetTargetPosition(m_spinningCubeRenderer->GetPosition());
+	m_textRenderer->RenderTextOffscreen(m_textRenderer->pre_sentence_pre, m_authorizedPerson, positionForText);
 	SpatialPointerPose^ pointerPose = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 	SpatialPointerPose^ pointerPose_details = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 
@@ -909,7 +913,8 @@ void HolographicFaceTrackerMain::LoadAppState()
 
 void HolographicFaceTrackerMain::RenderOffscreenTexture()
 {
-	m_textRenderer->RenderTextOffscreen(L"Hello, Hologram!\n", m_authorizedPerson);
+	//Windows::Foundation::Numerics::float2 positionForText = { 0.0f, 0.0f };
+	//m_textRenderer->RenderTextOffscreen(L"Hello, Hologram!\n", m_authorizedPerson, positionForText);
 }
 
 // Notifies classes that use Direct3D device resources that the device resources
