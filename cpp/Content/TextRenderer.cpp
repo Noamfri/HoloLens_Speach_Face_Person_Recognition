@@ -23,10 +23,20 @@ TextRenderer::TextRenderer(std::shared_ptr<DX::DeviceResources> deviceResources,
 {
 }
 
-void TextRenderer::RenderTextOffscreen(const std::wstring& str)
+void TextRenderer::RenderTextOffscreen(const std::wstring& str, bool isAuthorized)
 {
     // Clear the off-screen render target.
-    m_deviceResources->GetD3DDeviceContext()->ClearRenderTargetView(m_renderTargetView.Get(), DirectX::Colors::Transparent);
+	//m_deviceResources->GetD3DDeviceContext()->ClearRenderTargetView(m_renderTargetView.Get(), DirectX::Colors::Transparent);
+	if (isAuthorized)
+	{
+		m_deviceResources->GetD3DDeviceContext()->ClearRenderTargetView(m_renderTargetView.Get(), DirectX::Colors::Transparent);
+	}
+	else
+	{
+		float bgcolor[4] = { 0.3f, 0.0f, 0.0f, 0.3f }; //transparent red
+		m_deviceResources->GetD3DDeviceContext()->ClearRenderTargetView(m_renderTargetView.Get(), bgcolor);
+	}
+    
 
     // Begin drawing with D2D.
     m_d2dRenderTarget->BeginDraw();

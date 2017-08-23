@@ -162,6 +162,7 @@ namespace HolographicFaceTracker
 
         // Indicates whether any faces being tracked at the moment.
         bool                                                            m_trackingFaces = false;
+		bool															m_authorizedPerson = true;
 
         // Indicates whether all resources necessary for rendering are ready.
         bool                                                            m_isReadyToRender = false;

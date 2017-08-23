@@ -23,7 +23,7 @@ namespace HolographicFaceTracker
             uint32_t textureWidth,
             uint32_t textureHeight);
 
-        void RenderTextOffscreen(std::wstring const& str);
+        void RenderTextOffscreen(std::wstring const& str, bool isAuthorized);
 
         concurrency::task<void> CreateDeviceDependentResourcesAsync() override;
         void ReleaseDeviceDependentResources() override;

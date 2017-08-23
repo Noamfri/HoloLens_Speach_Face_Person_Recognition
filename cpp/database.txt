@@ -9,7 +9,7 @@ ben is a student at the VISL lab
 maroun
 maroun is a student at the TCE lab
 basel
-basel isn't a student - not allowed to enter VISL lab
+basel isn't a student - unauthorized to enter VISL lab
 domiana
 domiana is a student at the EE faculty
 matanya

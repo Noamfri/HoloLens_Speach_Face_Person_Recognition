@@ -406,13 +406,13 @@ void HolographicFaceTrackerMain::SetHolographicSpace(HolographicSpace^ holograph
 			// Set our status message to inform the user. Typically this should only happen on the emulator.
 			if (m_videoFrameProcessor == nullptr)
 			{
-				m_textRenderer->RenderTextOffscreen(L"No camera available");
+				m_textRenderer->RenderTextOffscreen(L"No camera available", m_authorizedPerson);
 			}
 			// Everything is good to go, so we can set our status message to inform the user when we don't detect
 			// any faces.
 			else
 			{
-				m_textRenderer->RenderTextOffscreen(L"No faces detected");
+				m_textRenderer->RenderTextOffscreen(L"No faces detected", m_authorizedPerson);
 				
 			}
 
@@ -615,7 +615,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 						 // auto s = make_shared<wstring>(L"Value 1");
 						 // m_textRenderer
 						 
-						  auto m_textRenderer_r = m_textRenderer;
+						auto m_textRenderer_r = m_textRenderer;
 						create_task(BitmapEncoder::CreateAsync(BitmapEncoder::PngEncoderId, mss)
 						).then([this, sftBitmap, mss, m_pre_sentence, m_textRenderer_r](Windows::Graphics::Imaging::BitmapEncoder^ encoder) // initialize the encoder for PNG
 						{
@@ -658,6 +658,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 														std::wstring s(ss->Data());		
 														int first_index = s.find(L"subject_id");
 														if (first_index > 0) {
+															m_authorizedPerson = true;
 															int second_index = s.find(L",", first_index + 13);
 															std::wstring name = s.substr(first_index + 13, second_index - first_index-13 - 1);
 															// name is the face subject_id
@@ -673,6 +674,12 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 															while (std::getline(infile, line)) {
 																if (name_sss == line) {
 																	std::getline(infile, line);
+
+																	//Check if the person is authorized or not
+																	if (line.find("unauthorized") != std::string::npos) {
+																		m_authorizedPerson = false;
+																	}
+
 																	std::wstring details = converterX.from_bytes(line);
 																	m_textRenderer_r->pre_sentence_pre = details;
 																	break;
@@ -682,6 +689,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 														}
 														else 
 														{
+															m_authorizedPerson = false;
 															m_textRenderer_r->pre_sentence_pre = L"unknown person";
 														}														
 														
@@ -712,6 +720,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 	{
 		m_textRenderer->pre_sentence_pre = L"No face detected";
 		searching = false; 
+		m_authorizedPerson = true;
 	}
 	}
 
@@ -729,7 +738,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 		
 		
 	}*/
-	m_textRenderer->RenderTextOffscreen(m_textRenderer->pre_sentence_pre);
+	m_textRenderer->RenderTextOffscreen(m_textRenderer->pre_sentence_pre, m_authorizedPerson);
 	SpatialPointerPose^ pointerPose = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 	SpatialPointerPose^ pointerPose_details = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 
@@ -863,6 +872,11 @@ bool HolographicFaceTrackerMain::Render(Windows::Graphics::Holographic::Holograp
 				// If we are tracking any faces, then we render the cube over their head, and the video image on the quad.
 				if (m_trackingFaces)
 				{
+					if (!m_authorizedPerson) 
+					{
+						float bgcolor[4] = { 0.3f, 0.0f, 0.0f, 0.3f }; //transparent red
+						context->ClearRenderTargetView(targets[0], bgcolor);
+					}
 					m_spinningCubeRenderer->Render();
 					// m_quadRenderer->RenderNV12(m_videoTexture->GetLuminanceTexture(), m_videoTexture->GetChrominanceTexture());
 					m_quadRenderer->RenderRGB(m_textRenderer->GetTexture());
@@ -895,7 +909,7 @@ void HolographicFaceTrackerMain::LoadAppState()
 
 void HolographicFaceTrackerMain::RenderOffscreenTexture()
 {
-	m_textRenderer->RenderTextOffscreen(L"Hello, Hologram!\n");
+	m_textRenderer->RenderTextOffscreen(L"Hello, Hologram!\n", m_authorizedPerson);
 }
 
 // Notifies classes that use Direct3D device resources that the device resources
