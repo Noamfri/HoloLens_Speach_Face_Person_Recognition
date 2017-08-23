@@ -70,6 +70,22 @@
     <ClCompile Include="Content\SpatialInputHandler.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlBase.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaCaptureManager.cpp" />
+    <ClCompile Include="DirectXHelper.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -114,6 +130,22 @@
     <ClInclude Include="Content\SpatialInputHandler.h">
       <Filter>Content</Filter>
     </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="IControl.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlBase.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaCaptureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\Shaders\QuadVertexShader.hlsl">
@@ -141,6 +173,33 @@
       <Filter>Content\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Content\Shaders\QuadGeometryShader.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GeometryShader.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GeometryShaderTexture.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShaderCursor.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShaderTexture.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShaderTexture.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="VPRTVertexShader.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="VPRTVertexShaderTexture.hlsl">
       <Filter>Content\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -15,13 +15,47 @@
 
 namespace DX
 {
+	typedef enum
+	{
+		VertexShader_Simple = 0,
+		VertexShader_VPRT,
+		VertexShader_Texture,
+		VertexShader_TextureVPRT,
+		VertexShader_Max
+	} VertexShaderIndex;
+
+	typedef enum
+	{
+		PixelShader_Simple = 0,
+		PixelShader_Cursor,
+		PixelShader_Texture,
+		PixelShader_Max
+	} PixelShaderIndex;
+
+	typedef enum
+	{
+		GeometryShader_Simple = 0,
+		GeometryShader_Texture,
+		GeometryShader_Max
+	} GeometryShaderIndex;
+
+	typedef enum
+	{
+		Texture_Cursor = 0,
+		Texture_Init,
+		Texture_Hologram,
+		Texture_SysAudio,
+		Texture_Photo,
+		Texture_Video,
+		Texture_Max
+	} TextureIndex;
     // Provides an interface for an application that owns DeviceResources to be notified of the device being lost or created.
-    interface IDeviceNotify
+   /* interface IDeviceNotify
     {
         virtual void OnDeviceLost()     = 0;
         virtual void OnDeviceRestored() = 0;
     };
-
+	*/
     // Creates and manages a Direct3D device and immediate context, Direct2D device and context (for debug), and the holographic swap chain.
     class DeviceResources
     {
@@ -35,7 +69,7 @@ namespace DX
         void Present(Windows::Graphics::Holographic::HolographicFrame^ frame);
 
         // Public methods related to holographic devices.
-        void SetHolographicSpace(Windows::Graphics::Holographic::HolographicSpace^ space);
+		Concurrency::task<void> SetHolographicSpace(Windows::Graphics::Holographic::HolographicSpace^ space);
         void EnsureCameraResources(
             Windows::Graphics::Holographic::HolographicFrame^ frame,
             Windows::Graphics::Holographic::HolographicFramePrediction^ prediction);
@@ -64,11 +98,19 @@ namespace DX
         IDWriteFactory2*        GetDWriteFactory() const                { return m_dwriteFactory.Get(); }
         IWICImagingFactory2*    GetWicImagingFactory() const            { return m_wicFactory.Get();    }
 
+		// Shader accessors.
+		ID3D11VertexShader*     GetVertexShader(const VertexShaderIndex index) { return m_vertexShaders[index].Get(); }
+		ID3D11InputLayout*      GetInputLayout(const VertexShaderIndex index) { return m_inputLayouts[index].Get(); }
+		ID3D11PixelShader*      GetPixelShader(const PixelShaderIndex index) { return m_pixelShaders[index].Get(); }
+		ID3D11GeometryShader*   GetGeometryShader(const GeometryShaderIndex index) { return m_geometryShaders[index].Get(); }
+		ID3D11Resource*         GetTexture(const TextureIndex index) { return m_textures[index].Get(); }
+
     private:
         // Private methods related to the Direct3D device, and resources based on that device.
         void CreateDeviceIndependentResources();
         void InitializeUsingHolographicSpace();
         void CreateDeviceResources();
+		Concurrency::task<void> LoadShaders();
 
         // Direct3D objects.
         Microsoft::WRL::ComPtr<ID3D11Device4>                   m_d3dDevice;
@@ -98,6 +140,16 @@ namespace DX
 
         // Back buffer resources, etc. for attached holographic cameras.
         std::map<UINT32, std::unique_ptr<CameraResources>>      m_cameraResources;
+
+
+		// Shader resources
+		Microsoft::WRL::ComPtr<ID3D11InputLayout>               m_inputLayouts[VertexShader_Max];
+		Microsoft::WRL::ComPtr<ID3D11VertexShader>              m_vertexShaders[VertexShader_Max];
+		Microsoft::WRL::ComPtr<ID3D11PixelShader>               m_pixelShaders[PixelShader_Max];
+		Microsoft::WRL::ComPtr<ID3D11GeometryShader>            m_geometryShaders[GeometryShader_Max];
+		Microsoft::WRL::ComPtr<ID3D11Resource>                  m_textures[Texture_Max];
+
+
         std::mutex                                              m_cameraResourcesLock;
     };
 

@@ -331,6 +331,61 @@ void HolographicFaceTrackerMain::SetHolographicSpace(HolographicSpace^ holograph
 
 	m_holographicSpace = holographicSpace;
 
+
+	///start  with button
+	m_cursor = std::make_unique<Cursor>(0.01f, 0.01f);
+	m_cursor->Initialize(m_deviceResources);
+
+	m_mainPanel = std::make_unique<Panel>(0.20f, 0.60f, 0.01f,      // Size
+		0.5f, 0.5f, 0.5f, 1.0f);  // Color
+	m_mainPanel->Initialize(m_deviceResources);
+	m_mainPanel->SetPosition(Windows::Foundation::Numerics::float3(-0.25f, 0.0f, -2.0f));
+
+	// Init button
+	m_initButton.reset(new Button(Windows::Foundation::Numerics::float3(0.14f, 0.07f, 0.01f),           // Size
+		Windows::Foundation::Numerics::float4(1.0f, 1.0f, 0.5f, 1.0f),        // Color
+		Windows::Foundation::Numerics::float4(1.0f, 1.0f, 0.9f, 1.0f),        // Focused Color
+		Windows::Foundation::Numerics::float4(0.0f, 0.0f, 0.5f, 1.0f),        // Turned on Color
+		DX::Texture_Init));
+	m_initButton->Initialize(m_deviceResources);
+	m_initButton->SetPosition(Windows::Foundation::Numerics::float3(0.0f, 0.25f, 0.01f));
+	m_initButton->SetOnAirTapCallback(std::bind(&HolographicFaceTrackerMain::OnButtonInitTapped, this));
+	m_initButton->SetEnabled(true);
+	m_mainPanel->AddChild(m_initButton);
+
+	// Photo button
+	/*
+	m_photoButton.reset(new Button(Windows::Foundation::Numerics::float3(0.14f, 0.07f, 0.01f),          // Size
+		Windows::Foundation::Numerics::float4(1.0f, 1.0f, 0.5f, 1.0f),       // Color
+		Windows::Foundation::Numerics::float4(1.0f, 1.0f, 0.9f, 1.0f),       // Focused Color
+		Windows::Foundation::Numerics::float4(0.0f, 0.0f, 0.5f, 1.0f),       // Turned on Color
+		DX::Texture_Photo));
+	m_photoButton->Initialize(m_deviceResources);
+	m_photoButton->SetPosition(Windows::Foundation::Numerics::float3(0.0f, 0.15f, 0.01f));
+	m_photoButton->SetOnAirTapCallback(std::bind(&HolographicFaceTrackerMain::OnButtonPhotoTapped, this));
+	m_photoButton->SetEnabled(false);
+	m_mainPanel->AddChild(m_photoButton);
+	*/
+	
+
+	// Spatial Input Handler																			
+	m_spatialInputHandler = std::make_unique<SpatialInputHandler>();
+
+	// Media Capture Manager
+	m_mediaCapture = std::make_unique<MediaCaptureManager>();
+
+
+
+
+	///end  with button
+
+
+
+
+
+
+
+
 	// Use the default SpatialLocator to track the motion of the device.
 	m_locator = SpatialLocator::GetDefault();
 
@@ -742,7 +797,50 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 	SpatialPointerPose^ pointerPose = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 	SpatialPointerPose^ pointerPose_details = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 
+	// button
+	// Check for new input state since the last frame.
+	SpatialInteractionSourceState^ pointerState = m_spatialInputHandler->CheckForInput();
+	// button
+
 	m_timer.Tick([&] {
+
+
+		//// button
+		m_mainPanel->Update(m_timer, holographicFrame, currentCoordinateSystem, pointerState);
+
+		DirectX::BoundingOrientedBox panelBoundingBox;
+		m_mainPanel->GetBoundingBox(panelBoundingBox);
+
+		auto pointerPose = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
+		if (pointerPose != nullptr)
+		{
+			// Get the gaze direction relative to the given coordinate system.
+			const float3 position = pointerPose->Head->Position;
+			const float3 direction = pointerPose->Head->ForwardDirection;
+
+			DirectX::XMFLOAT3 headPosition = DirectX::XMFLOAT3(position.x, position.y, position.z);
+			DirectX::XMFLOAT3 headDirection = DirectX::XMFLOAT3(direction.x, direction.y, direction.z);
+			float distance = 0.0f;
+
+			if (panelBoundingBox.Intersects(XMLoadFloat3(&headPosition), XMLoadFloat3(&headDirection), distance))
+			{
+				m_cursor->SetDistance(distance - 0.05f);
+			}
+			else
+			{
+				m_cursor->SetDistance(2.0f);
+			}
+		}
+		else
+		{
+			m_cursor->SetDistance(2.0f);
+		}
+
+		m_cursor->Update(m_timer, holographicFrame, currentCoordinateSystem, nullptr);
+
+		//button
+
+
 		m_spinningCubeRenderer->Update(m_timer);
 
 		// If we're tracking faces, then put the quad to the left side of the viewport, 2 meters out.
@@ -888,6 +986,9 @@ bool HolographicFaceTrackerMain::Render(Windows::Graphics::Holographic::Holograp
 					m_quadRenderer->RenderRGB(m_textRenderer->GetTexture());
 					
 				}
+
+				m_mainPanel->Render();
+				m_cursor->Render();
 			}
 
 			atLeastOneCameraRendered = true;
@@ -923,6 +1024,9 @@ void HolographicFaceTrackerMain::OnDeviceLost()
 	m_spinningCubeRenderer->ReleaseDeviceDependentResources();
 	m_textRenderer->ReleaseDeviceDependentResources();
 	m_videoTexture->ReleaseDeviceDependentResources();
+
+	m_cursor->ReleaseDeviceDependentResources();
+	m_mainPanel->ReleaseDeviceDependentResources();
 }
 
 // Notifies classes that use Direct3D device resources that the device resources
@@ -938,8 +1042,12 @@ void HolographicFaceTrackerMain::OnDeviceRestored()
 
 	when_all(initTasks.begin(), initTasks.end()).then([this] {
 		m_isReadyToRender = true;
+		m_cursor->CreateDeviceDependentResources();
+		m_mainPanel->CreateDeviceDependentResources();
 	});
 	RenderOffscreenTexture();
+
+	
 }
 
 void HolographicFaceTrackerMain::OnLocatabilityChanged(SpatialLocator^ sender, Object^ args)
@@ -1106,6 +1214,33 @@ void HolographicFaceTrackerMain::OnSpeechQualityDegraded(Windows::Media::SpeechR
 		OutputDebugStringW(L"An error was reported with no information.\n");
 		break;
 	}
+}
+
+void HolographicFaceTrackerMain::OnButtonInitTapped()
+{
+	DisableAllButtons();
+
+	try
+	{
+		Concurrency::create_task(m_mediaCapture->InitializeAsync()).then([this]()
+		{
+			m_photoButton->SetEnabled(true);
+			
+		});
+	}
+	catch (Platform::Exception ^e)
+	{
+		OutputDebugString(e->Message->Data());
+	}
+}
+
+
+
+void HolographicFaceTrackerMain::DisableAllButtons()
+{
+	m_initButton->SetEnabled(false);
+	m_photoButton->SetEnabled(false);
+	
 }
 
 

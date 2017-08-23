@@ -29,9 +29,39 @@ namespace HolographicFaceTracker
         Windows::Foundation::Numerics::float3 color;
     };
 
+
+	struct VertexPositionColor_
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT4 color;
+	};
+
+
     struct VertexPositionTex
     {
         Windows::Foundation::Numerics::float3 pos;
         Windows::Foundation::Numerics::float2 tex;
     };
+
+	struct VertexPositionTexture
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 uv;
+	};
+
+	// Constant buffer used to send hologram position transform to the shader pipeline.
+	struct ModelColorConstantBuffer
+	{
+		DirectX::XMFLOAT4X4 model;
+		DirectX::XMFLOAT4   color;
+	};
+
+	struct ModelConstantBuffer
+	{
+		DirectX::XMFLOAT4X4 model;
+	};
+
+	// Assert that the constant buffer remains 16-byte aligned (best practice).
+	static_assert((sizeof(ModelConstantBuffer) % (sizeof(float) * 4)) == 0, "Model constant buffer size must be 16-byte aligned (16 bytes is the length of four floats).");
+
 }

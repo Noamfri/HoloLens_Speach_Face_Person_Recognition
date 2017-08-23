@@ -13,6 +13,14 @@
 
 namespace DX
 {
+	
+
+	// Provides an interface for an application that owns DeviceResources to be notified of the device being lost or created.
+	interface IDeviceNotify
+	{
+		virtual void OnDeviceLost() = 0;
+		virtual void OnDeviceRestored() = 0;
+	};
     class DeviceResources;
 
     // Constant buffer used to send the view-projection matrices to the shader pipeline.

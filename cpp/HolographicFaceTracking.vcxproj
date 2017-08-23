@@ -82,6 +82,7 @@
     <ClInclude Include="Audio\OmnidirectionalSound.h" />
     <ClInclude Include="Audio\XAudio2Helpers.h" />
     <ClInclude Include="AppView.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Common\PrintWstringToDebugConsole.h" />
     <ClInclude Include="Content\QuadRenderer.h" />
     <ClInclude Include="Content\SpatialInputHandler.h" />
@@ -89,6 +90,8 @@
     <ClInclude Include="Content\FaceTrackerProcessor.h" />
     <ClInclude Include="Content\TextRenderer.h" />
     <ClInclude Include="Content\NV12VideoTexture.h" />
+    <ClInclude Include="ControlBase.h" />
+    <ClInclude Include="Cursor.h" />
     <ClInclude Include="HolographicFaceTrackerMain.h" />
     <ClInclude Include="Common\DeviceResources.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
@@ -96,6 +99,9 @@
     <ClInclude Include="Common\StepTimer.h" />
     <ClInclude Include="Content\ShaderStructures.h" />
     <ClInclude Include="Content\VideoFrameProcessor.h" />
+    <ClInclude Include="IControl.h" />
+    <ClInclude Include="MediaCaptureManager.h" />
+    <ClInclude Include="Panel.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -103,16 +109,22 @@
     <ClCompile Include="Audio\AudioStreamReader.cpp" />
     <ClCompile Include="Audio\OmnidirectionalSound.cpp" />
     <ClCompile Include="AppView.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Content\QuadRenderer.cpp" />
     <ClCompile Include="Content\SpatialInputHandler.cpp" />
     <ClCompile Include="Content\SpinningCubeRenderer.cpp" />
     <ClCompile Include="Content\FaceTrackerProcessor.cpp" />
     <ClCompile Include="Content\TextRenderer.cpp" />
     <ClCompile Include="Content\NV12VideoTexture.cpp" />
+    <ClCompile Include="ControlBase.cpp" />
+    <ClCompile Include="Cursor.cpp" />
+    <ClCompile Include="DirectXHelper.cpp" />
     <ClCompile Include="HolographicFaceTrackerMain.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="Common\CameraResources.cpp" />
     <ClCompile Include="Content\VideoFrameProcessor.cpp" />
+    <ClCompile Include="MediaCaptureManager.cpp" />
+    <ClCompile Include="Panel.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -158,6 +170,50 @@
     <FxCompile Include="Content\Shaders\CubeGeometryShader.hlsl">
       <ShaderType>Geometry</ShaderType>
       <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="GeometryShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="GeometryShaderTexture.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PixelShaderCursor.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PixelShaderTexture.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="VertexShaderTexture.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="VPRTVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="VPRTVertexShaderTexture.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

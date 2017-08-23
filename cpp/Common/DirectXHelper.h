@@ -45,6 +45,26 @@ namespace DX
         return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
     }
 
+	HRESULT CreateWICTextureFromMemoryEx(ID3D11Device* d3dDevice,
+		const uint8_t* wicData,
+		size_t wicDataSize,
+		size_t maxsize,
+		D3D11_USAGE usage,
+		unsigned int bindFlags,
+		unsigned int cpuAccessFlags,
+		unsigned int miscFlags,
+		bool forceSRGB,
+		ID3D11Resource** texture,
+		ID3D11ShaderResourceView** textureView);
+
+	HRESULT CreateWICTextureFromMemory(ID3D11Device* d3dDevice,
+		const uint8_t* wicData,
+		size_t wicDataSize,
+		ID3D11Resource** texture,
+		ID3D11ShaderResourceView** textureView,
+		size_t maxsize = 0);
+
+
 #if defined(_DEBUG)
     // Check for SDK Layer support.
     inline bool SdkLayersAvailable()

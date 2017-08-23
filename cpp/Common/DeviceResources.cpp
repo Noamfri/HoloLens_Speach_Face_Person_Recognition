@@ -22,6 +22,37 @@ using namespace Windows::Graphics::DirectX::Direct3D11;
 using namespace Windows::Graphics::Display;
 using namespace Windows::Graphics::Holographic;
 
+static const std::wstring s_VertexShaderFiles[DX::VertexShader_Max] =
+{
+	L"ms-appx:///VertexShader.cso",
+	L"ms-appx:///VprtVertexShader.cso",
+	L"ms-appx:///VertexShaderTexture.cso",
+	L"ms-appx:///VprtVertexShaderTexture.cso"
+};
+
+static const std::wstring s_PixelShaderFiles[DX::PixelShader_Max] =
+{
+	L"ms-appx:///PixelShader.cso",
+	L"ms-appx:///PixelShaderCursor.cso",
+	L"ms-appx:///PixelShaderTexture.cso",
+};
+
+static const std::wstring s_GeometryShaderFiles[DX::GeometryShader_Max] =
+{
+	L"ms-appx:///GeometryShader.cso",
+	L"ms-appx:///GeometryShaderTexture.cso"
+};
+
+static const std::wstring s_TextureFiles[DX::Texture_Max] =
+{
+	L"ms-appx:////Assets//Cursor.png",
+	L"ms-appx:////Assets//Init.png",
+	L"ms-appx:////Assets//Hologram.png",
+	L"ms-appx:////Assets//SysAudio.png",
+	L"ms-appx:////Assets//Photo.png",
+	L"ms-appx:////Assets//Video.png"
+};
+
 // Constructor for DeviceResources.
 DX::DeviceResources::DeviceResources()
 {
@@ -69,12 +100,14 @@ void DX::DeviceResources::CreateDeviceIndependentResources()
         );
 }
 
-void DX::DeviceResources::SetHolographicSpace(HolographicSpace^ holographicSpace)
+Concurrency::task<void> DX::DeviceResources::SetHolographicSpace(HolographicSpace^ holographicSpace)
 {
     // Cache the holographic space. Used to re-initalize during device-lost scenarios.
     m_holographicSpace = holographicSpace;
 
     InitializeUsingHolographicSpace();
+
+	return LoadShaders();
 }
 
 void DX::DeviceResources::InitializeUsingHolographicSpace()
@@ -297,11 +330,14 @@ void DX::DeviceResources::HandleDeviceLost()
     });
 
     InitializeUsingHolographicSpace();
+	LoadShaders().then([this]()
+	{
 
-    if (m_deviceNotify != nullptr)
-    {
-        m_deviceNotify->OnDeviceRestored();
-    }
+		if (m_deviceNotify != nullptr)
+		{
+			m_deviceNotify->OnDeviceRestored();
+		}
+	});
 }
 
 // Register our DeviceNotify to be informed on device lost and creation.
@@ -358,4 +394,124 @@ void DX::DeviceResources::Present(HolographicFrame^ frame)
         // The Direct3D device, context, and resources should be recreated.
         HandleDeviceLost();
     }
+}
+
+Concurrency::task<void> DX::DeviceResources::LoadShaders()
+{
+	std::vector<Concurrency::task<void>> shaderTaskGroup;
+
+	// Load vertex shaders and input layouts
+	for (int i = 0; i < VertexShader_Max; i++)
+	{
+		Concurrency::task<std::vector<byte>> loadVSTask = DX::ReadDataAsync(s_VertexShaderFiles[i]);
+
+		Concurrency::task<void> createVSTask = loadVSTask.then([this, i](const std::vector<byte>& fileData)
+		{
+			DX::ThrowIfFailed(
+				m_d3dDevice->CreateVertexShader(
+					&fileData[0],
+					fileData.size(),
+					nullptr,
+					m_vertexShaders[i].ReleaseAndGetAddressOf()));
+
+			switch (i)
+			{
+			case VertexShader_Simple:
+			case VertexShader_VPRT:
+			{
+				const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+				{
+					{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				};
+
+				DX::ThrowIfFailed(
+					m_d3dDevice->CreateInputLayout(
+						vertexDesc,
+						ARRAYSIZE(vertexDesc),
+						&fileData[0],
+						fileData.size(),
+						m_inputLayouts[i].ReleaseAndGetAddressOf()));
+			}
+			break;
+			case VertexShader_Texture:
+			case VertexShader_TextureVPRT:
+			{
+				const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+				{
+					{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				};
+
+				DX::ThrowIfFailed(
+					m_d3dDevice->CreateInputLayout(
+						vertexDesc,
+						ARRAYSIZE(vertexDesc),
+						&fileData[0],
+						fileData.size(),
+						m_inputLayouts[i].ReleaseAndGetAddressOf()));
+			}
+			break;
+			}
+		});
+
+		shaderTaskGroup.push_back(createVSTask);
+	}
+
+	// Load pixel shaders
+	for (int i = 0; i < PixelShader_Max; i++)
+	{
+		Concurrency::task<std::vector<byte>> loadPSTask = DX::ReadDataAsync(s_PixelShaderFiles[i]);
+
+		Concurrency::task<void> createPSTask = loadPSTask.then([this, i](const std::vector<byte>& fileData)
+		{
+			DX::ThrowIfFailed(
+				m_d3dDevice->CreatePixelShader(
+					&fileData[0],
+					fileData.size(),
+					nullptr,
+					m_pixelShaders[i].ReleaseAndGetAddressOf()));
+		});
+
+		shaderTaskGroup.push_back(createPSTask);
+	}
+
+	// Load geometry shaders
+	for (int i = 0; i < GeometryShader_Max; i++)
+	{
+		Concurrency::task<std::vector<byte>> loadGSTask = DX::ReadDataAsync(s_GeometryShaderFiles[i]);
+
+		Concurrency::task<void> createGSTask = loadGSTask.then([this, i](const std::vector<byte>& fileData)
+		{
+			DX::ThrowIfFailed(
+				m_d3dDevice->CreateGeometryShader(
+					&fileData[0],
+					fileData.size(),
+					nullptr,
+					m_geometryShaders[i].ReleaseAndGetAddressOf()));
+		});
+
+		shaderTaskGroup.push_back(createGSTask);
+	}
+
+	// Load textures
+	for (int i = 0; i < Texture_Max; i++)
+	{
+		Concurrency::task<std::vector<byte>> loadTextureTask = DX::ReadDataAsync(s_TextureFiles[i]);
+
+		Concurrency::task<void> createTextureTask = loadTextureTask.then([this, i](const std::vector<byte>& fileData)
+		{
+			DX::ThrowIfFailed(
+				DX::CreateWICTextureFromMemory(
+					m_d3dDevice.Get(),
+					&fileData[0],
+					fileData.size(),
+					m_textures[i].ReleaseAndGetAddressOf(),
+					nullptr));
+		});
+
+		shaderTaskGroup.push_back(createTextureTask);
+	}
+
+	return when_all(std::begin(shaderTaskGroup), std::end(shaderTaskGroup));
 }

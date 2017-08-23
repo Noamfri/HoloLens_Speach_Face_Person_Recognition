@@ -17,6 +17,13 @@
 #include "Audio\OmnidirectionalSound.h"
 
 
+#include "Panel.h"
+#include "Button.h"
+#include "Cursor.h"
+#include "Content\SpatialInputHandler.h"
+
+#include "MediaCaptureManager.h"
+
 // Updates, renders, and presents holographic content using Direct3D.
 namespace HolographicFaceTracker
 {
@@ -124,6 +131,19 @@ namespace HolographicFaceTracker
         // and when tearing down AppMain.
         void UnregisterHolographicEventHandlers();
 
+		void OnButtonInitTapped();
+	
+
+		void DisableAllButtons();
+
+		std::unique_ptr<Panel>                                          m_mainPanel;
+		std::shared_ptr<Button>                                         m_initButton;
+		std::shared_ptr<Button>                                         m_photoButton;
+
+		std::unique_ptr<Cursor>                                         m_cursor;
+
+		std::shared_ptr<SpatialInputHandler>                            m_spatialInputHandler;
+
         void ProcessFaces(
             std::vector<Windows::Graphics::Imaging::BitmapBounds> const& faces,
             Windows::Media::Capture::Frames::MediaFrameReference^ frame,
@@ -198,5 +218,10 @@ namespace HolographicFaceTracker
 		float                                                           m_secondsUntilSoundIsComplete = 0.f;
 		std::wstring													m_lastSentence = L"Welcome";
 		bool                                                            searching = false;
+
+		// Mixed Reality Capture
+		std::unique_ptr<MediaCaptureManager>                            m_mediaCapture;
+		bool                                                            m_recording;
+
     };
 }
