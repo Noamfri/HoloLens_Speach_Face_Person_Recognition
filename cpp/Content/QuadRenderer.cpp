@@ -27,54 +27,88 @@ QuadRenderer::QuadRenderer(std::shared_ptr<DX::DeviceResources> deviceResources)
 
 // This function uses a SpatialPointerPose to position the world-locked hologram
 // two meters in front of the user's heading.
-void QuadRenderer::Update(SpatialPointerPose^ pointerPose, float3 const& offset, DX::StepTimer const& timer)
+void QuadRenderer::Update(SpatialPointerPose^ pointerPose, float3 const& offset, DX::StepTimer const& timer, Windows::Foundation::Numerics::float3 const& pos)
 {
     float const deltaTime = static_cast<float>(timer.GetElapsedSeconds());
     float const lerpDeltaTime = deltaTime * c_lerpRate;
 
     if (pointerPose != nullptr)
     {
-        // Get the gaze direction relative to the given coordinate system.
-        float3 const headPosition = pointerPose->Head->Position;
-        float3 const headForward = pointerPose->Head->ForwardDirection;
-        float3 const headBack = -headForward;
-        float3 const headUp = pointerPose->Head->UpDirection;
-        float3 const headRight = cross(headForward, headUp);
+		if (pos == NULL) 
+		{
+			// Get the gaze direction relative to the given coordinate system.
+			float3 const headPosition = pointerPose->Head->Position;
+			float3 const headForward = pointerPose->Head->ForwardDirection;
+			float3 const headBack = -headForward;
+			float3 const headUp = pointerPose->Head->UpDirection;
+			float3 const headRight = cross(headForward, headUp);
 
-        m_targetPosition = headPosition + (headRight * offset.x) + (headUp * offset.y) + (headBack * offset.z);
+			m_targetPosition = headPosition + (headRight * offset.x) + (headUp * offset.y) + (headBack * offset.z);
 
-        float3 const prevPosition = m_position;
-        m_position = lerp(m_position, m_targetPosition, lerpDeltaTime);
+			float3 const prevPosition = m_position;
+			m_position = lerp(m_position, m_targetPosition, lerpDeltaTime);
 
-        m_velocity = (m_position - prevPosition) / deltaTime;
+			m_velocity = (m_position - prevPosition) / deltaTime;
 
-        m_normal = normalize(-m_position);
+			m_normal = normalize(-m_position);
 
-        m_texCoordScale = lerp(m_texCoordScale, m_targetTexCoordScale, lerpDeltaTime);
-        m_texCoordOffset = lerp(m_texCoordOffset, m_targetTexCoordOffset, lerpDeltaTime);
+			m_texCoordScale = lerp(m_texCoordScale, m_targetTexCoordScale, lerpDeltaTime);
+			m_texCoordOffset = lerp(m_texCoordOffset, m_targetTexCoordOffset, lerpDeltaTime);
 
-        // Calculate our model to world matrix relative to the user's head.
-        float4x4 const modelRotationTranslation = make_float4x4_world(m_position, -m_normal, headUp);
+			// Calculate our model to world matrix relative to the user's head.
+			float4x4 const modelRotationTranslation = make_float4x4_world(m_position, -m_normal, headUp);
 
-        // Scale our 1m quad down to 20cm wide.
-        float4x4 const modelScale = make_float4x4_scale({ 0.2f });
+			// Scale our 1m quad down to 20cm wide.
+			float4x4 const modelScale = make_float4x4_scale({ 0.2f });
 
-        m_modelConstantBufferData.model = modelScale * modelRotationTranslation;
-        m_modelConstantBufferData.texCoordScale = m_texCoordScale;
-        m_modelConstantBufferData.texCoordOffset = m_texCoordOffset;
+			m_modelConstantBufferData.model = modelScale * modelRotationTranslation;
+			m_modelConstantBufferData.texCoordScale = m_texCoordScale;
+			m_modelConstantBufferData.texCoordOffset = m_texCoordOffset;
 
-        // Use the D3D device context to update Direct3D device-based resources.
-        const auto context = m_deviceResources->GetD3DDeviceContext();
+		}
+		else 
+		{
+			float3 const headUp = pointerPose->Head->UpDirection;
 
-        // Update the model transform buffer for the hologram.
-        context->UpdateSubresource(
-            m_modelConstantBuffer.Get(),
-            0,
-            nullptr,
-            &m_modelConstantBufferData,
-            0,
-            0
-        );
+			float3 const prevPosition = m_position;
+			float3 const fixer = { 0.0f, -0.16f, 0.0f };
+			m_targetPosition = pos + fixer;
+			m_position = lerp(m_position, m_targetPosition, lerpDeltaTime);
+
+			m_velocity = (prevPosition - m_position) / deltaTime;
+
+			m_normal = normalize(-m_position);
+
+			m_texCoordScale = lerp(m_texCoordScale, m_targetTexCoordScale, lerpDeltaTime);
+			m_texCoordOffset = lerp(m_texCoordOffset, m_targetTexCoordOffset, lerpDeltaTime);
+
+			m_modelConstantBufferData.texCoordScale = m_texCoordScale;
+			m_modelConstantBufferData.texCoordOffset = m_texCoordOffset;
+
+			float m_degreesPerSecond = 0.f;
+			float const radiansPerSecond = XMConvertToRadians(m_degreesPerSecond);
+
+			// Scale the cube down to 20cm
+			float4x4 const modelScale = make_float4x4_scale({ 0.2f });
+			float4x4 const modelRotation = make_float4x4_rotation_y(radiansPerSecond);
+			float4x4 const modelTranslation = make_float4x4_world(m_position, -m_normal, headUp);
+
+			m_modelConstantBufferData.model = modelScale * modelRotation * modelTranslation;
+
+		}
+
+		// Use the D3D device context to update Direct3D device-based resources.
+		const auto context = m_deviceResources->GetD3DDeviceContext();
+
+		// Update the model transform buffer for the hologram.
+		context->UpdateSubresource(
+			m_modelConstantBuffer.Get(),
+			0,
+			nullptr,
+			&m_modelConstantBufferData,
+			0,
+			0
+		);
     }
 }
 

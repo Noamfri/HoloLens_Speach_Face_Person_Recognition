@@ -502,7 +502,7 @@ void HolographicFaceTrackerMain::ProcessFaces(std::vector<BitmapBounds> const& f
 
 	// Place the cube 25cm above the center of the face.
 	//float3 const cubeOffsetInWorldSpace = float3{ 0.0f, 0.25f, 0.0f };
-	float3 const cubeOffsetInWorldSpace = float3{ 0.0f, 0.05f, 0.0f };
+	float3 const cubeOffsetInWorldSpace = float3{ 0.0f, 0.03f, 0.0f };
 
 	BitmapBounds bestRect = {};
 	float3 bestRectPositionInCameraSpace = float3::zero();
@@ -743,8 +743,9 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 	Windows::Foundation::Numerics::float2 positionForText = { positionForTextFromCube.x, positionForTextFromCube.y };
 	m_textRenderer->SetTargetPosition(m_spinningCubeRenderer->GetPosition());
 	m_textRenderer->RenderTextOffscreen(m_textRenderer->pre_sentence_pre, m_authorizedPerson, positionForText);
+	//SpatialPointerPose^ pointerPose = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
+	//SpatialPointerPose^ pointerPose_details = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 	SpatialPointerPose^ pointerPose = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
-	SpatialPointerPose^ pointerPose_details = SpatialPointerPose::TryGetAtTimestamp(currentCoordinateSystem, prediction->Timestamp);
 
 	m_timer.Tick([&] {
 		m_spinningCubeRenderer->Update(m_timer);
@@ -753,7 +754,7 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 		if (m_trackingFaces)
 		{
 			/*m_quadRenderer->Update(pointerPose, float3{ 0.0f, -0.15f, -2.0f }, m_timer);*/
-			m_quadRenderer->Update(pointerPose, float3{ -0.0f, 0.0f, -2.0f }, m_timer);
+			m_quadRenderer->Update(pointerPose, float3{ -0.0f, -0.2f, -2.0f }, m_timer, m_spinningCubeRenderer->GetPosition());
 			
 		}
 		// Otherwise, put the quad centered in the viewport, 2 meters out.
@@ -762,7 +763,8 @@ HolographicFrame^ HolographicFaceTrackerMain::Update()
 			m_quadRenderer->ResetTexCoordScaleAndOffset();
 			
 			/*m_quadRenderer->Update(pointerPose, float3{ 0.0f, -0.15f, -2.0f }, m_timer);*/
-			m_quadRenderer->Update(pointerPose, float3{ -0.0f, 0.0f, -2.0f }, m_timer);
+			const float3 fixer = { 0.0f, 0.0f, -2.0f };
+			m_quadRenderer->Update(pointerPose, float3{ -0.0f, 0.0f, -2.0f }, m_timer, NULL);
 		
 		}
 
