@@ -12,6 +12,8 @@
 #include "pch.h"
 #include "AppView.h"
 
+#include <ppltasks.h>
+
 using namespace HolographicFaceTracker;
 
 using namespace concurrency;
@@ -89,11 +91,18 @@ void AppView::SetWindow(CoreWindow^ window)
     // space (when available) to create a Direct3D device. The HolographicSpace
     // uses this ID3D11Device to create and manage device-based resources such as
     // swap chains.
-    m_deviceResources->SetHolographicSpace(m_holographicSpace);
+    //m_deviceResources->SetHolographicSpace(m_holographicSpace);
 
-    // The main class uses the holographic space for updates and rendering.
-    m_main->SetHolographicSpace(m_holographicSpace);
+    //// The main class uses the holographic space for updates and rendering.
+    //m_main->SetHolographicSpace(m_holographicSpace);
+
+	m_deviceResources->SetHolographicSpace(m_holographicSpace).then([this]()
+	{
+		// The main class uses the holographic space for updates and rendering.
+		m_main->SetHolographicSpace(m_holographicSpace);
+	});
 }
+
 
 // The Load method can be used to initialize scene resources or to load a
 // previously saved app state.

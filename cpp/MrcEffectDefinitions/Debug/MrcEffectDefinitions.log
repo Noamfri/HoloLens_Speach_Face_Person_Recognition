@@ -1,0 +1,6 @@
+﻿  pch.cpp
+  MrcAudioEffectDefinition.cpp
+  MrcVideoEffectDefinition.cpp
+     Creating library D:\SecurityGuardApp\cpp\Debug\MrcEffectDefinitions\MrcEffectDefinitions.lib and object D:\SecurityGuardApp\cpp\Debug\MrcEffectDefinitions\MrcEffectDefinitions.exp
+  MrcEffectDefinitions.vcxproj -> D:\SecurityGuardApp\cpp\Debug\MrcEffectDefinitions\MrcEffectDefinitions.dll
+  MrcEffectDefinitions.vcxproj -> D:\SecurityGuardApp\cpp\Debug\MrcEffectDefinitions\MrcEffectDefinitions.pdb (Partial PDB)

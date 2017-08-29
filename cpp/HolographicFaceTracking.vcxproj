@@ -249,6 +249,11 @@
   <ItemGroup>
     <Text Include="database.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="MrcEffectDefinitions\MrcEffectDefinitions.vcxproj">
+      <Project>{e6f44333-3fe9-5a10-aba5-52512270be97}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VSINSTALLDIR)\Common7\IDE\Extensions\Microsoft\VsGraphics\ImageContentTask.targets" />

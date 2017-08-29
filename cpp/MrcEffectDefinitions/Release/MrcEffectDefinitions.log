@@ -1,0 +1,8 @@
+﻿  pch.cpp
+  MrcAudioEffectDefinition.cpp
+  MrcVideoEffectDefinition.cpp
+     Creating library D:\Windows-universal-samples-master\Windows-universal-samples-master\Samples\HolographicMixedRealityCapture\cpp\Release\MrcEffectDefinitions\MrcEffectDefinitions.lib and object D:\Windows-universal-samples-master\Windows-universal-samples-master\Samples\HolographicMixedRealityCapture\cpp\Release\MrcEffectDefinitions\MrcEffectDefinitions.exp
+  Generating code
+  All 343 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  MrcEffectDefinitions.vcxproj -> D:\Windows-universal-samples-master\Windows-universal-samples-master\Samples\HolographicMixedRealityCapture\cpp\Release\MrcEffectDefinitions\MrcEffectDefinitions.dll

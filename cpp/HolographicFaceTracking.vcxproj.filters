@@ -76,15 +76,15 @@
     <ClCompile Include="ControlBase.cpp">
       <Filter>Content</Filter>
     </ClCompile>
-    <ClCompile Include="Panel.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Cursor.cpp">
       <Filter>Content</Filter>
     </ClCompile>
     <ClCompile Include="MediaCaptureManager.cpp" />
     <ClCompile Include="DirectXHelper.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Content</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
