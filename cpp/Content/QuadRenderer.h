@@ -31,7 +31,8 @@ namespace HolographicFaceTracker
         void Update(
             Windows::UI::Input::Spatial::SpatialPointerPose^ pointerPose,
             Windows::Foundation::Numerics::float3 const& offset,
-            DX::StepTimer const& timer);
+            DX::StepTimer const& timer,
+			Windows::Foundation::Numerics::float3 const& pos);
 
         // Renders an NV12 image onto the quad, requires two shader resource views for each channel.
         void RenderNV12(
@@ -49,7 +50,8 @@ namespace HolographicFaceTracker
 
         void ResetTexCoordScaleAndOffset(
             Windows::Foundation::Numerics::float2 const& texCoordScale = { 1.0f, 1.0f },
-            Windows::Foundation::Numerics::float2 const& texCoordOffset = { 0.0f, 0.0f });
+            /*Windows::Foundation::Numerics::float2 const& texCoordOffset = { 0.0f, 0.0f });*/
+			Windows::Foundation::Numerics::float2 const& texCoordOffset = { 0.0f, -0.2f });
 
         Windows::Foundation::Numerics::float3 const& GetPosition() const { return m_position; }
         Windows::Foundation::Numerics::float3 const& GetVelocity() const { return m_velocity; }
@@ -78,17 +80,19 @@ namespace HolographicFaceTracker
 
         // Variables used with the rendering loop.
         float                                               m_degreesPerSecond = 45.f;
-        Windows::Foundation::Numerics::float3               m_targetPosition = { 0.f, 0.f, -2.f };
+        Windows::Foundation::Numerics::float3               m_targetPosition = { 0.0f,- 0.0f, -2.f };
         Windows::Foundation::Numerics::float3               m_targetUp = { 0.f, 1.f, 0.f };
         Windows::Foundation::Numerics::float3               m_targetForward = { 0.f, 0.f, -1.f };
-        Windows::Foundation::Numerics::float3               m_position = { 0.f, 0.f, -2.f };
+        Windows::Foundation::Numerics::float3               m_position = { -0.0f,-0.0f, -2.f };
         Windows::Foundation::Numerics::float3               m_velocity = { 0.f, 0.f, 0.f };
         Windows::Foundation::Numerics::float3               m_normal = { 0.f, 0.f, 1.f };
 
         Windows::Foundation::Numerics::float2               m_targetTexCoordScale = { 1.0f, 1.0f };
-        Windows::Foundation::Numerics::float2               m_targetTexCoordOffset = { 0.0f, 0.0f };
+        //Windows::Foundation::Numerics::float2               m_targetTexCoordOffset = { 0.0f, 0.0f };
+		Windows::Foundation::Numerics::float2               m_targetTexCoordOffset = { 0.0f, -0.f };
         Windows::Foundation::Numerics::float2               m_texCoordScale = { 1.0f, 1.0f };
-        Windows::Foundation::Numerics::float2               m_texCoordOffset = { 0.0f, 0.0f };
+        //Windows::Foundation::Numerics::float2               m_texCoordOffset = { 0.0f, 0.0f };
+		Windows::Foundation::Numerics::float2               m_texCoordOffset = { 0.0f, -0.2f };
 
         // If the current D3D Device supports VPRT, we can avoid using a geometry
         // shader just to set the render target array index.
