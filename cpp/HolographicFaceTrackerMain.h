@@ -9,6 +9,8 @@
 //
 //*********************************************************
 
+#define DRAW_SAMPLE_CONTENT
+
 #pragma once
 
 #include "Common\StepTimer.h"
@@ -16,13 +18,16 @@
 
 #include "Audio\OmnidirectionalSound.h"
 
+#ifdef DRAW_SAMPLE_CONTENT
+#include "Content\SpinningCubeRenderer.h"
 
-#include "Panel.h"
-#include "Button.h"
-#include "Cursor.h"
+#include "Content\Panel.h"
+#include "Content\Button.h"
+#include "Content\Cursor.h"
 #include "Content\SpatialInputHandler.h"
 
 #include "MediaCaptureManager.h"
+#endif
 
 // Updates, renders, and presents holographic content using Direct3D.
 namespace HolographicFaceTracker
@@ -132,15 +137,41 @@ namespace HolographicFaceTracker
         void UnregisterHolographicEventHandlers();
 
 		void OnButtonInitTapped();
+		void OnButtonVideoTapped();
+		void OnButtonPhotoTapped();
+		void OnButtonHologramTapped();
+		void OnButtonSysAudioTapped();
 	
 
 		void DisableAllButtons();
 
+#ifdef DRAW_SAMPLE_CONTENT
+		// Renders a colorful holographic cube that's 20 centimeters wide. This sample content
+		// is used to demonstrate world-locked rendering.
+		//std::unique_ptr<SpinningCubeRenderer>                           m_cube1;
+		//std::unique_ptr<SpinningCubeRenderer>                           m_cube2;
+		//std::unique_ptr<SpinningCubeRenderer>                           m_cube3;
+		//std::unique_ptr<SpinningCubeRenderer>                           m_cube4;
+
 		std::unique_ptr<Panel>                                          m_mainPanel;
+		std::shared_ptr<Button>                                         m_lockButton;
 		std::shared_ptr<Button>                                         m_initButton;
 		std::shared_ptr<Button>                                         m_photoButton;
+		std::shared_ptr<Button>                                         m_videoButton;
+		std::shared_ptr<Button>                                         m_hologramButton;
+		std::shared_ptr<Button>                                         m_sysAudioButton;
 
 		std::unique_ptr<Cursor>                                         m_cursor;
+
+		//// Listens for the Pressed spatial input event.
+		//std::shared_ptr<SpatialInputHandler>                            m_spatialInputHandler;
+#endif
+
+		//std::unique_ptr<Panel>                                          m_mainPanel;
+		//std::shared_ptr<Button>                                         m_initButton;
+		//std::shared_ptr<Button>                                         m_photoButton;
+
+		//std::unique_ptr<Cursor>                                         m_cursor;
 
 		std::shared_ptr<SpatialInputHandler>                            m_spatialInputHandler;
 

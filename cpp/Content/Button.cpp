@@ -2,7 +2,7 @@
 #include "Button.h"
 #include "Common\DirectXHelper.h"
 
-using namespace HolographicMRCSample;
+using namespace HolographicFaceTracker;
 using namespace Concurrency;
 using namespace DirectX;
 using namespace Windows::Foundation::Numerics;

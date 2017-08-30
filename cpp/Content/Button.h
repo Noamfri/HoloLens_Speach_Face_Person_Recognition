@@ -2,7 +2,7 @@
 
 #include "ControlBase.h"
 
-namespace HolographicMRCSample
+namespace HolographicFaceTracker
 {
     // This sample renderer instantiates a basic rendering pipeline.
     class Button : public ControlBase

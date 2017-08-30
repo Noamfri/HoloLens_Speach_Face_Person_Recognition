@@ -2,7 +2,7 @@
 #include "Panel.h"
 #include "Common\DirectXHelper.h"
 
-using namespace HolographicMRCSample;
+using namespace HolographicFaceTracker;
 using namespace Concurrency;
 using namespace DirectX;
 using namespace Windows::Foundation::Numerics;
@@ -173,76 +173,76 @@ void Panel::DoCreateDeviceDependentResources()
         // initiate bounding box
         m_boundingBox = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(halfWidth, halfHeight, halfDepth), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
-        // Load mesh vertices. Each vertex has a position and a color.
-        // Note that the cube size has changed from the default DirectX app
-        // template. Windows Holographic is scaled in meters, so to draw the
-        // cube at a comfortable size we made the cube width 0.2 m (20 cm).
-        const VertexPositionColor cubeVertices[] =
-        {
-            { XMFLOAT3(-halfWidth, -halfHeight, -halfDepth), color },
-            { XMFLOAT3(-halfWidth, -halfHeight,  halfDepth), color },
-            { XMFLOAT3(-halfWidth,  halfHeight, -halfDepth), color },
-            { XMFLOAT3(-halfWidth,  halfHeight,  halfDepth), color },
-            { XMFLOAT3( halfWidth, -halfHeight, -halfDepth), color },
-            { XMFLOAT3( halfWidth, -halfHeight,  halfDepth), color },
-            { XMFLOAT3( halfWidth,  halfHeight, -halfDepth), color },
-            { XMFLOAT3( halfWidth,  halfHeight,  halfDepth), color },
-        };
+        //// Load mesh vertices. Each vertex has a position and a color.
+        //// Note that the cube size has changed from the default DirectX app
+        //// template. Windows Holographic is scaled in meters, so to draw the
+        //// cube at a comfortable size we made the cube width 0.2 m (20 cm).
+        //const VertexPositionColor cubeVertices[] =
+        //{
+        //    { XMFLOAT3(-halfWidth, -halfHeight, -halfDepth), color },
+        //    { XMFLOAT3(-halfWidth, -halfHeight,  halfDepth), color },
+        //    { XMFLOAT3(-halfWidth,  halfHeight, -halfDepth), color },
+        //    { XMFLOAT3(-halfWidth,  halfHeight,  halfDepth), color },
+        //    { XMFLOAT3( halfWidth, -halfHeight, -halfDepth), color },
+        //    { XMFLOAT3( halfWidth, -halfHeight,  halfDepth), color },
+        //    { XMFLOAT3( halfWidth,  halfHeight, -halfDepth), color },
+        //    { XMFLOAT3( halfWidth,  halfHeight,  halfDepth), color },
+        //};
 
-        D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
-        vertexBufferData.pSysMem = cubeVertices;
-        vertexBufferData.SysMemPitch = 0;
-        vertexBufferData.SysMemSlicePitch = 0;
-        const CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(cubeVertices), D3D11_BIND_VERTEX_BUFFER);
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(
-                &vertexBufferDesc,
-                &vertexBufferData,
-                &m_vertexBuffer
-                )
-            );
+        //D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
+        ////vertexBufferData.pSysMem = cubeVertices;
+        //vertexBufferData.SysMemPitch = 0;
+        //vertexBufferData.SysMemSlicePitch = 0;
+        //const CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(cubeVertices), D3D11_BIND_VERTEX_BUFFER);
+        //DX::ThrowIfFailed(
+        //    m_deviceResources->GetD3DDevice()->CreateBuffer(
+        //        &vertexBufferDesc,
+        //        &vertexBufferData,
+        //        &m_vertexBuffer
+        //        )
+        //    );
 
-        // Load mesh indices. Each trio of indices represents
-        // a triangle to be rendered on the screen.
-        // For example: 2,1,0 means that the vertices with indexes
-        // 2, 1, and 0 from the vertex buffer compose the
-        // first triangle of this mesh.
-        // Note that the winding order is clockwise by default.
-        static const unsigned short cubeIndices [] =
-        {
-            2,1,0, // -x
-            2,3,1,
+        //// Load mesh indices. Each trio of indices represents
+        //// a triangle to be rendered on the screen.
+        //// For example: 2,1,0 means that the vertices with indexes
+        //// 2, 1, and 0 from the vertex buffer compose the
+        //// first triangle of this mesh.
+        //// Note that the winding order is clockwise by default.
+        //static const unsigned short cubeIndices [] =
+        //{
+        //    2,1,0, // -x
+        //    2,3,1,
 
-            6,4,5, // +x
-            6,5,7,
+        //    6,4,5, // +x
+        //    6,5,7,
 
-            0,1,5, // -y
-            0,5,4,
+        //    0,1,5, // -y
+        //    0,5,4,
 
-            2,6,7, // +y
-            2,7,3,
+        //    2,6,7, // +y
+        //    2,7,3,
 
-            0,4,6, // -z
-            0,6,2,
+        //    0,4,6, // -z
+        //    0,6,2,
 
-            1,3,7, // +z
-            1,7,5,
-        };
+        //    1,3,7, // +z
+        //    1,7,5,
+        //};
 
-        m_indexCount = ARRAYSIZE(cubeIndices);
+        //m_indexCount = ARRAYSIZE(cubeIndices);
 
-        D3D11_SUBRESOURCE_DATA indexBufferData = {0};
-        indexBufferData.pSysMem          = cubeIndices;
-        indexBufferData.SysMemPitch      = 0;
-        indexBufferData.SysMemSlicePitch = 0;
-        const CD3D11_BUFFER_DESC indexBufferDesc(sizeof(cubeIndices), D3D11_BIND_INDEX_BUFFER);
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(
-                &indexBufferDesc,
-                &indexBufferData,
-                &m_indexBuffer
-                )
-            );
+        //D3D11_SUBRESOURCE_DATA indexBufferData = {0};
+        //indexBufferData.pSysMem          = cubeIndices;
+        //indexBufferData.SysMemPitch      = 0;
+        //indexBufferData.SysMemSlicePitch = 0;
+        //const CD3D11_BUFFER_DESC indexBufferDesc(sizeof(cubeIndices), D3D11_BIND_INDEX_BUFFER);
+        //DX::ThrowIfFailed(
+        //    m_deviceResources->GetD3DDevice()->CreateBuffer(
+        //        &indexBufferDesc,
+        //        &indexBufferData,
+        //        &m_indexBuffer
+        //        )
+        //    );
     }
 
     // Once the cube is loaded, the object is ready to be rendered.

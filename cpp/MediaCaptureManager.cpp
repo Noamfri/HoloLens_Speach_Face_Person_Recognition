@@ -52,7 +52,7 @@ Concurrency::task<void> MediaCaptureManager::InitializeAsync(IMFDXGIDeviceManage
 		m_currentState = Initialized;
 	});
 }
-/*
+
 Concurrency::task<void> MediaCaptureManager::StartRecordingAsync()
 {
 	// Lock to check current state
@@ -155,7 +155,7 @@ Concurrency::task<void> MediaCaptureManager::StartRecordingAsync()
 			}
 		});
 	});
-}*/
+}
 
 Concurrency::task<void> MediaCaptureManager::StopRecordingAsync()
 {
@@ -210,7 +210,7 @@ Concurrency::task<void> MediaCaptureManager::StopRecordingAsync()
 		}
 	});
 }
-/*
+
 Concurrency::task<void> MediaCaptureManager::TakePhotoAsync()
 {
 	// Lock to check current state
@@ -287,7 +287,7 @@ Concurrency::task<void> MediaCaptureManager::TakePhotoAsync()
 		});
 	});
 }
-*/
+
 bool MediaCaptureManager::CanTakePhoto()
 {
 	auto lock = m_lock.LockShared();

@@ -2,7 +2,7 @@
 
 #include "Panel.h"
 
-namespace HolographicMRCSample
+namespace HolographicFaceTracker
 {
     class Cursor
     {

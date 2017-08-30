@@ -5,7 +5,7 @@
 #include "..\Common\StepTimer.h"
 #include <DirectXCollision.h>
 
-namespace HolographicMRCSample
+namespace HolographicFaceTracker
 {
     typedef enum
     {

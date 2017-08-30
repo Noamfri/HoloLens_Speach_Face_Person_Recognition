@@ -9,7 +9,7 @@ using namespace Windows::Graphics::Holographic;
 using namespace Windows::Perception::Spatial;
 using namespace Windows::UI::Input::Spatial;
 
-namespace HolographicMRCSample
+namespace HolographicFaceTracker
 {
     // This sample renderer instantiates a basic rendering pipeline.
     class ControlBase : public IControl
