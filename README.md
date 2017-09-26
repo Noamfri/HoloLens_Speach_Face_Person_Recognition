@@ -32,7 +32,7 @@ Microsoft Visual Studio 2017 Update 3 and the Microsoft HoloLens Emulator, go to
 
 ### Reference
 
-The following types are used in this code sample:
+The following types are used in this code application:
 * [Windows.Media.Capture namespace](https://msdn.microsoft.com/library/windows/apps/windows.media.capture.aspx)
   * [MediaCapture class](https://msdn.microsoft.com/library/windows/apps/windows.media.capture.mediacapture.aspx)
 * [Windows.Media.Capture.Frames namespace](https://msdn.microsoft.com/library/windows/apps/windows.media.capture.frames.aspx)
