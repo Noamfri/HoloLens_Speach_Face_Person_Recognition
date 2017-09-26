@@ -54,27 +54,25 @@ The following types are used in this code sample:
 
 **Phone:** Not supported
 
-## Build the sample
+## Build the application
 
-1. If you download the samples ZIP, be sure to unzip the entire archive, not just the folder with
+1. If you download the application ZIP, be sure to unzip the entire archive, not just the folder with
    the sample you want to build.
 2. Start Microsoft Visual Studio 2017 and select **File** \> **Open** \> **Project/Solution**.
-3. Starting in the folder where you unzipped the samples, go to the Samples subfolder, then the
-   subfolder for this specific sample, then the subfolder for your preferred language (C++, C#, or
-   JavaScript). Double-click the Visual Studio Solution (.sln) file.
+3. Starting in the folder where you unzipped the application, go to the cpp subfolder. Double-click the Visual Studio Solution (.sln) file.
 4. Press Ctrl+Shift+B, or select **Build** \> **Build Solution**.
 
-## Run the sample
+## Run the application
 
-The next steps depend on whether you just want to deploy the sample or you want to both deploy and
+The next steps depend on whether you just want to deploy the application or you want to both deploy and
 run it.
 
-### Deploying the sample to the Microsoft HoloLens emulator
+### Deploying the application to the Microsoft HoloLens emulator
 
 - Click the debug target drop-down, and select **Microsoft HoloLens Emulator**.
 - Select **Build** \> **Deploy** Solution.
 
-### Deploying the sample to a Microsoft HoloLens
+### Deploying the application to a Microsoft HoloLens
 
 - Developer unlock your Microsoft HoloLens. For instructions, go to [Enable your device for development]
   (https://msdn.microsoft.com/windows/uwp/get-started/enable-your-device-for-development#enable-your-windows-10-devices).
@@ -100,8 +98,8 @@ you will need to use a PIN to pair your PC with the Microsoft HoloLens.
 - On your Microsoft HoloLens, select **Done** to accept the pairing.
 - The solution will then start to deploy.
 
-### Deploying and running the sample
+### Deploying and running the application
 
-- To debug the sample and then run it, follow the steps listed above to connect your
+- To debug the application and then run it, follow the steps listed above to connect your
   developer-unlocked Microsoft HoloLens, then press F5 or select **Debug** \> **Start Debugging**.
   To run  the sample without debugging, press Ctrl+F5 or select **Debug** \> **Start Without Debugging**.
